@@ -1,11 +1,9 @@
-This is an example of working with Entity Framework
+# This is an example of working with Entity Framework
 
-	This project adds some complexity due the addition of 
-	DTOs returning from the ENDPOINTs we could return directly
-	the 'Entities' what would make it very simple without need 
-	of 'Mappings'
-	Other element that contribute for the complexity is the need
-	of a circular reference of Account inside of a DTO Address.
+	**In this project example I am demostrating the use of the relationship N-TO-N with Microsoft EntityFramework.
+	For simplicity sake I am using AutoMapper
+	as build the Mappings manually when you want to focus on 
+	the relationship between tables, can be a little frustated sometimes.**
 	
 	
 	
@@ -16,11 +14,13 @@ This is an example of working with Entity Framework
 	
 		AccountEntity.cs
 		AddressEntity.cs
+		AccountAddressEntity.cs
+		
 		
 	
-	Relation: 1-TO-N
+	Relation: N-TO-N
 		
-			In this example: each Account can have multple addresses
+			In this example: An account can have many Addresses, and One Address can have many Accounts.
 			
 			Declare a property into 'Account' class of type ICollection that will
 			be a type of a new List of the class Address. Example:
@@ -45,33 +45,94 @@ This is an example of working with Entity Framework
 		  
 	Option: For clarity sake:
 	
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
-			modelBuilder.Entity<Address>()
-				.HasOne(a => a.Account)
-				.WithMany(acc => acc.addresses)
-				.HasForeignKey(a => a.AccountId)
-				.OnDelete(DeleteBehavior.Cascade); // Optional: controls delete behavior
-		}
+		Enforce the referential entigrity:
+
+		 modelBuilder.Entity<AccountAddress>()
+			.HasKey(aa => new { aa.AccountId, aa.AddressId });
+
+		 modelBuilder.Entity<AccountAddress>()
+			.HasOne(aa => aa.Account)
+			.WithMany(a => a.AccountAddresses)
+			.HasForeignKey(aa => aa.AccountId);
+
+		 modelBuilder.Entity<AccountAddress>()
+			.HasOne(aa => aa.Address)
+			.WithMany(a => a.AccountAddresses)
+			.HasForeignKey(aa => aa.AddressId);
+
 		
 	Option: Seeds
 
 			modelBuilder.Entity<Account>().HasData(
             new Account
             {
-				Id = 1;
-				AccountNumber = "123";
-				Balance = 100.00;
-				Limit = 50;
+				Id = 1,
+				AccountNumber = "123",
+				Balance = 500.00M,
+				Limit = 150.00M,
+            },
+			new Account
+            {
+				Id = 2,
+				AccountNumber = "222",
+				Balance = 100.00M,
+				Limit = 50.00M,
             });
 		
-			modelBuilder.Entity<Address>().HasData(
+		modelBuilder.Entity<Address>().HasData(
             new Address
             {
-				Id = 1;
-				AccountId = "123";
-				City = "Auckland";
+				Id = 1,
+				City = "Auckland",
+            },
+			new Address
+            {
+				Id = 2,
+				City = "Hamilton",
+            },
+			new Address
+            {
+				Id = 3,
+				City = "Wellington",
+            },
+			new Address
+            {
+				Id = 4,
+				City = "Chirschurch",
             });
+			
+		
+		modelBuilder.Entity<AccountAddress>().HasData(
+			new AccountAddress
+			{
+				AccountId = 1,
+				AddressId = 1
+			},
+			new AccountAddress
+			{
+				AccountId = 1,
+				AddressId = 2
+			},
+			new AccountAddress
+			{
+				AccountId = 2,
+				AddressId = 1
+			},
+			new AccountAddress
+			{
+				AccountId = 2,
+				AddressId = 2
+			},
+			new AccountAddress
+			{
+				AccountId = 2,
+				AddressId = 3
+			},
+			new AccountAddress
+			{
+				AccountId = 2,
+				AddressId = 4
+			});
 		  
 		  
 		
