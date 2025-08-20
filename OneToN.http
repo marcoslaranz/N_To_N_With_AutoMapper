@@ -1,0 +1,6 @@
+@OneToN_HostAddress = http://localhost:5287
+
+GET {{OneToN_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
