@@ -1,14 +1,19 @@
 # This is an example of working with Entity Framework
 
-	**In this project example I am demostrating the use of the relationship N-TO-N with Microsoft EntityFramework.
-	For simplicity sake I am using AutoMapper
-	as build the Mappings manually when you want to focus on 
-	the relationship between tables, can be a little frustated sometimes.**
+
+<img width="587" height="310" alt="image" src="https://github.com/user-attachments/assets/6faa72c4-450d-4219-937c-8de3cb8620de" />
+
+
+### What is interesting about this kind of relationship in EF is the simplicity that is lacking in the One-to-N, as the table that ties both tables together is an ordinary table. The first table (Account) has a navigation property; basically, this is a list of type 'AccountAddress'. The second table also has the same declaration.
+
+	**In this project example, I am demonstrating the use of the relationship N-TO-N with Microsoft Entity Framework.
+	For simplicity's sake, I am using AutoMapper.
+	As I want to focus on the relationship between tables, building the 'Mapping' manually can be a little frustrating sometimes.**
 	
 	
 	
 
-1. Create your Entities classes
+1. Create your Entity classes
 
 	Folder: Entities:
 	
@@ -22,30 +27,30 @@
 		
 			In this example: An account can have many Addresses, and One Address can have many Accounts.
 			
-			Declare a property into 'Account' class of type ICollection that will
+			Declare a property in the 'Account' class of type ICollection that will
 			be a type of a new List of the class Address. Example:
 			
-			// This is called Navigation property.
-			// Check the convetion names like the plural for the type name
+			// This is called a Navigation property.
+			// Check the convention names like the plural for the type name
 	        public ICollection<Address> addresses { get; set; } = new List<Address>();
 			
 			
 	Optional:
-			Into the class 'Address' add a navigation property of type of 
+			Into the class 'Address', add a navigation property of type of 
 			class 'Account'. Example:
 			
 			// Navigation Property
 			public Account Account { get; set; } = null;
 		
 		
-	Note: If you don't declare the optional navigation property into 'Address'
-	      Your scrips to create the tables and relationship won't be affected.
-		  This will be use for EF to create queries and use strategies to load
+	Note: If you don't declare the optional navigation property in 'Address'
+	      Your scripts to create the tables and relationships won't be affected.
+		  This will be used for EF to create queries and use strategies to load
 		  the data from these tables,(Lazy, Eager, Explici).
 		  
-	Option: For clarity sake:
+	Option: For clarity's sake:
 	
-		Enforce the referential entigrity:
+		Enforce the referential integrity:
 
 		 modelBuilder.Entity<AccountAddress>()
 			.HasKey(aa => new { aa.AccountId, aa.AddressId });
